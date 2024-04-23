@@ -1,0 +1,35 @@
+﻿@page "/AzureAdPublicAuthentication"
+@inject IPublicAuthenticationClient client
+
+<h2>Welcome to Azure Ad Private account.</h2>
+
+<button class="btn btn-success" @onclick="OnLoginClicked">Login</button>
+
+<br /><br />
+<h3>Result:</h3>
+
+<br /><br />
+<b>User name:</b> @CurrentUser?.Name
+
+<br /><br />
+<b>Email:</b> @CurrentUser?.Email
+
+<br /><br />
+<div class="token_container">
+    <b>Id Token:</b> @Result?.IdToken
+</div>
+<br />
+<br />
+
+@code {
+    public CurrentUser CurrentUser { get; set; }
+
+    public AuthenticationResult Result { get; set; }
+
+    protected async Task OnLoginClicked()
+    {
+        var cts = new CancellationTokenSource();
+        this.Result = await this.client.AcquireTokenPrompetAsync(cts.Token).ConfigureAwait(false);
+        this.CurrentUser = this.client.ResolveToken(this.Result);
+    }
+}

@@ -1,0 +1,30 @@
+﻿@page "/AzureAdForClientAuthentication"
+@inject IMachineAuthenticationClient client
+
+<h2>Welcome to Azure Ad for client account.</h2>
+
+<button class="btn btn-success" @onclick="OnLoginClicked">login</button>
+
+<br /><br />
+<h3>Result:</h3>
+
+<br /><br />
+<div class="token_container">
+    <b>Access token:</b> 
+    @if(result != null)
+    {
+        <span>bearer @result?.AccessToken</span>
+    }
+</div>
+<br />
+<br />
+
+@code {
+    public AuthenticationResult result { get; set; }
+
+    protected async Task OnLoginClicked()
+    {
+        var cts = new CancellationTokenSource();
+        this.result = await this.client.AcquireTokenPrompetAsync(cts.Token).ConfigureAwait(false);
+    }
+}
